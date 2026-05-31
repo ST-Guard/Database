@@ -240,6 +240,7 @@ CREATE VIEW vwBuscarDados AS
         p.nivel         AS cargo,
         p.descricao     AS bio,
         d.nome          AS nomeDataCenter,
+        z.idZona        AS idZona,
         z.nome          AS nomeZona
     FROM usuario u
     JOIN papel p ON p.idPapel = u.fkPapel
