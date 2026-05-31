@@ -93,8 +93,8 @@ CREATE TABLE regiao (
     idRegiao            INT PRIMARY KEY AUTO_INCREMENT,
     cep                 CHAR(8),
     numero              VARCHAR(45),
-    complemento         VARCHAR(45),
-    estado              CHAR(2),
+    uf         CHAR(2),
+    estado              VARCHAR(45),
     fkRegiaoEmpresa     INT,
     CONSTRAINT fkRegiaoEmpresa
         FOREIGN KEY (fkRegiaoEmpresa)
@@ -188,7 +188,12 @@ INSERT INTO usuario (nome, email, cpf, telefone, senha, status, fkPapel) VALUES
     ('Maria Gestora', 'maria@gmail.com', '12345678910', '(11) 9999-8888', '123456', 'Ativo', 1);
  
 INSERT INTO datacenter (nome, capacidadeServidores) VALUES
-    ('ST-SP-01', 100);
+    ('DC-SP-01', 100),
+	('DC-RJ-01', 100),
+    ('DC-BH-01', 100);
+
+	
+
  
 INSERT INTO datacenters_gestores (fk_usuario, fk_datacenter) VALUES
     (1, 1);
@@ -207,8 +212,11 @@ INSERT INTO analista_zona (usuario_id, zona_id) VALUES
     (2, 1),
     (3, 1);
  
-INSERT INTO regiao (cep, numero, complemento, estado, fkRegiaoEmpresa, fkRegiaoDataCenter) VALUES
-    ('12345678', '9101', 'Steam Sp', 'SP', 1, 1);
+INSERT INTO regiao (cep, numero, uf, estado, fkRegiaoEmpresa, fkRegiaoDataCenter) VALUES
+    ('12345678', '9101', 'SP', 'São Paulo', 1, 1),
+	('12345678', '9101', 'RJ', 'Rio de Janeiro', 1, 2),
+    ('12345678', '9101', 'BH', 'Belo Horizonte', 1, 3);
+
  
 INSERT INTO servidor (nome, tipo, estado, fkZona) VALUES
     ('SRV-DC01-WEB-05', 'Web', 'Ativo', 1),
@@ -223,10 +231,10 @@ INSERT INTO componentes (nome, tipo, unidadeMedida, capacidadeMaxima) VALUES
     ('REDE', 'Latencia',       'MBps',  50);
  
 INSERT INTO componentes_servidores (limite, fkServidor, fkComponentes) VALUES
-    (90, 1, 1), (16, 1, 2), (450, 1, 3), (40, 1, 4),
-    (90, 2, 1), (16, 2, 2), (450, 2, 3), (40, 2, 4),
-    (90, 3, 1), (16, 3, 2), (450, 3, 3), (40, 3, 4),
-    (90, 4, 1), (16, 4, 2), (450, 4, 3), (40, 4, 4);
+    (90, 1, 1), (90, 1, 2), (80, 1, 3), (40, 1, 4),
+    (90, 2, 1), (85, 2, 2), (90, 2, 3), (40, 2, 4),
+    (90, 3, 1), (65, 3, 2), (65, 3, 3), (40, 3, 4),
+    (90, 4, 1), (75, 4, 2), (70, 4, 3), (40, 4, 4);
  
 CREATE VIEW vwBuscarDados AS
     SELECT
@@ -251,3 +259,22 @@ CREATE VIEW vwBuscarDados AS
         OR
         (p.nivel = 'Gestor'   AND d.idDataCenter = dg.fk_datacenter)
     );
+    
+    
+   #lista datacenters que o user tem acesso 
+    SELECT DISTINCT r.estado, r.idRegiao FROM usuario as u JOIN datacenters_gestores as dg 
+	ON dg.fk_usuario = u.idUsuario 
+		JOIN datacenter as d 
+			ON dg.fk_datacenter = d.idDataCenter 
+				JOIN regiao as r ON fkRegiaoDataCenter = d.idDataCenter
+				WHERE u.fkPapel = 1 AND dg.fk_usuario = 1;
+                
+                
+    #lista as regioes dos datacenters que o user tem acesso
+     SELECT d.nome, fk_datacenter FROM usuario as u JOIN datacenters_gestores as dg 
+	ON dg.fk_usuario = u.idUsuario 
+		JOIN datacenter as d 
+			ON dg.fk_datacenter = d.idDataCenter 
+				JOIN regiao as r ON fkRegiaoDataCenter = d.idDataCenter
+				WHERE u.fkPapel = 1 AND dg.fk_usuario =1 AND r.idRegiao = 1;
+    
