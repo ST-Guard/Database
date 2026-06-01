@@ -299,7 +299,6 @@ INSERT INTO papel (nivel, descricao, fkEmpresa) VALUES
  
 INSERT INTO usuario (nome, email, cpf, telefone, senha, status, fkPapel) VALUES
 ('Maria Gestora', 'maria@smartdata.com', '11122233344', '(11) 9999-0001', '123456', 'Ativo', 1);
- 
 INSERT INTO usuario (nome, email, cpf, telefone, senha, status, fkPapel) VALUES
 ('Erick Analista',   'erick@smartdata.com',   '22233344455', '(11) 9999-0002', '123456', 'Ativo', 2),
 ('Miguel Analista',  'miguel@smartdata.com',  '33344455566', '(11) 9999-0003', '123456', 'Ativo', 2),
@@ -309,18 +308,18 @@ INSERT INTO usuario (nome, email, cpf, telefone, senha, status, fkPapel) VALUES
 ('Rafael Analista',  'rafael@smartdata.com',  '77788899900', '(51) 9999-0007', '123456', 'Ativo', 2);
 
 INSERT INTO datacenter (nome, capacidadeServidores) VALUES
-('SP', 100),
-('RJ', 100),
-('RS', 100);
+('DC-SP-01', 100),
+('DC-RJ-01', 100),
+('DC-RJ-01', 100);
 
 INSERT INTO datacenters_gestores (fk_usuario, fk_datacenter) VALUES
 (1, 1), (1, 2), (1, 3);
 
-INSERT INTO regiao (cep, numero, estado, fkRegiaoEmpresa, fkRegiaoDataCenter) VALUES
-('01310100', '1000', 'DC São Paulo',     1, 1),
-('20040020', '500',  'DC Rio de Janeiro', 1, 2),
-('90010280', '200',  'DC Porto Alegre',  1, 3);
- 
+INSERT INTO regiao (cep, numero, uf, estado, fkRegiaoEmpresa, fkRegiaoDataCenter) VALUES
+    ('12345678', '9101', 'SP', 'São Paulo', 1, 1),
+	('12345678', '9101', 'RJ', 'Rio de Janeiro', 1, 2),
+    ('12345678', '9101', 'MG', 'Minas Gerais', 1, 3);
+
 INSERT INTO zona (nome, fkDataCenter) VALUES
 ('Zona A', 1), ('Zona B', 1), ('Zona C', 1);
 
@@ -495,4 +494,15 @@ UPDATE usuario SET sla_mttr = (SELECT CAST(AVG(r.mttr_minutos) AS UNSIGNED) FROM
 UPDATE usuario SET sla_mttr = (SELECT CAST(AVG(r.mttr_minutos) AS UNSIGNED) FROM registros_alertas r WHERE r.fk_responsavel = 5 AND r.resolvido_em IS NOT NULL) WHERE idUsuario = 5;
 UPDATE usuario SET sla_mttr = (SELECT CAST(AVG(r.mttr_minutos) AS UNSIGNED) FROM registros_alertas r WHERE r.fk_responsavel = 6 AND r.resolvido_em IS NOT NULL) WHERE idUsuario = 6;
 UPDATE usuario SET sla_mttr = (SELECT CAST(AVG(r.mttr_minutos) AS UNSIGNED) FROM registros_alertas r WHERE r.fk_responsavel = 7 AND r.resolvido_em IS NOT NULL) WHERE idUsuario = 7;
-    
+
+
+SELECT DISTINCT 
+            r.idRegiao,
+            r.uf,	
+            r.estado
+        FROM regiao AS r
+        JOIN datacenter AS d
+            ON d.idDataCenter = r.fkRegiaoDataCenter
+        JOIN empresa AS e
+            ON e.idEmpresa = r.fkRegiaoEmpresa
+        WHERE e.idEmpresa = 1;
