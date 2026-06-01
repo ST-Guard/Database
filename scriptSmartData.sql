@@ -310,7 +310,7 @@ INSERT INTO usuario (nome, email, cpf, telefone, senha, status, fkPapel) VALUES
 INSERT INTO datacenter (nome, capacidadeServidores) VALUES
 ('DC-SP-01', 100),
 ('DC-RJ-01', 100),
-('DC-RJ-01', 100);
+('DC-RS-01', 100);
 
 INSERT INTO datacenters_gestores (fk_usuario, fk_datacenter) VALUES
 (1, 1), (1, 2), (1, 3);
@@ -318,7 +318,7 @@ INSERT INTO datacenters_gestores (fk_usuario, fk_datacenter) VALUES
 INSERT INTO regiao (cep, numero, uf, estado, fkRegiaoEmpresa, fkRegiaoDataCenter) VALUES
     ('12345678', '9101', 'SP', 'São Paulo', 1, 1),
 	('12345678', '9101', 'RJ', 'Rio de Janeiro', 1, 2),
-    ('12345678', '9101', 'MG', 'Minas Gerais', 1, 3);
+    ('12345678', '9101', 'RS', 'Rio Grande do Sul', 1, 3);
 
 INSERT INTO zona (nome, fkDataCenter) VALUES
 ('Zona A', 1), ('Zona B', 1), ('Zona C', 1);
